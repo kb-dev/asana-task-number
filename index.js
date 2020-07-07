@@ -9,8 +9,17 @@ const data = require("./data.json");
 
 const app = express();
 const client = asana.Client.create().useAccessToken(config.token);
+const port = process.env.ASANA_PORT || 80;
 
 app.use(bodyParser.json());
+
+client.users.me().then((me) => {
+    if (me && me.name) {
+        console.log(`Connected to Asana as ${me.name}`);
+    } else {
+        console.warn('Failed to retrieve user data');
+    }
+});
 
 const writeFile = util.promisify(fs.writeFile);
 
@@ -77,9 +86,18 @@ app.post("/newTask", (req, res) => {
         });
 });
 
-app.listen(config.port, (err) => {
+app.get('*', (req, res) => {
+    res.sendStatus(404);
+});
+app.post('*', (req, res) => {
+    res.sendStatus(404);
+});
+
+app.listen(port, (err) => {
+    console.log('Server started on port ' + port);
+
     if (err) {
-        console.error(e);
+        console.error(err);
         process.exit(-1);
     }
 });

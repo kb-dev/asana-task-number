@@ -3,5 +3,7 @@ version: '3.1'
 services:
   app:
     build: .
+    environment:
+      - ASANA_PORT=80
     ports:
-      - "46537:46537"
+      - "8082:80"

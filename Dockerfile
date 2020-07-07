@@ -1,6 +1,6 @@
 FROM node:lts-alpine
 
-EXPOSE 46537
+EXPOSE 80
 
 COPY . /app
 WORKDIR /app
@@ -8,4 +8,4 @@ WORKDIR /app
 RUN npm install
 RUN npm install -g pm2
 
-CMD ["pm2-runtime", "index.js"]
+CMD ["pm2-runtime", "--raw", "ecosystem.config.js"]
