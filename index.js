@@ -53,7 +53,10 @@ app.post("/newTask", (req, res) => {
         .reduce(
             (promise, task) =>
                 promise
-                    .then(() => client.tasks.findById(task.resource.gid))
+                    .then(() => {
+                        console.log('Task received :', task.resource.gid);
+                        return client.tasks.getTask(task.resource.gid)
+                    })
                     .then((r) => {
                         if (
                             r.custom_fields.some(
