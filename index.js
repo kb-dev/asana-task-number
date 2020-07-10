@@ -54,11 +54,14 @@ app.post("/newTask", (req, res) => {
             (promise, task) =>
                 promise
                     .then(() => {
-                        console.log('Task received :', task.resource.gid);
-                        return client.tasks.getTask(task.resource.gid)
+                        console.log('Task received: ', task.resource.gid);
+                        return client.tasks.getTask(task.resource.gid);
+                    })
+                    .catch((err) => { // Task does not exist anymore
+                        console.error(err);
                     })
                     .then((r) => {
-                        if (
+                        if (r &&
                             r.custom_fields.some(
                                 (field) => field.name === "Task ID" && !field.number_value
                             )
@@ -66,7 +69,7 @@ app.post("/newTask", (req, res) => {
                             task.customId = data.taskNumber;
                             data.taskNumber++;
 
-                            console.log("Update", task.resource.gid);
+                            console.log('Update task: ', task.resource.gid);
 
                             return client.tasks.update(task.resource.gid, {
                                 custom_fields: {
